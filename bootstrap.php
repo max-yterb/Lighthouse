@@ -10,13 +10,13 @@ if (!isset($_SESSION['csrf_token'])) {
 
 // Define base paths
 $root      = __DIR__;
-$core      = "$root/includes/";
+$core      = "$root/includes";
 $viewDir   = "$root/views/";
 $logDir    = "$root/logs/";
 $dbFile    = "$root/database/database.sqlite";
 
 // Load configuration first
-$config = require "$root/$core/core_config.php";
+$config = require "$core/config.php";
 
 // Request context
 $route     = strtok($_SERVER['REQUEST_URI'], '?');
@@ -34,13 +34,13 @@ $meta = [
 ];
 
 // Core setup
-require_once "$root/core/utils.php";
-require_once "$root/core/db.php";
-require_once "$root/core/auth.php";
-require_once "$root/core/validation.php";
+require_once "$core/utils.php";
+require_once "$core/db.php";
+require_once "$core/auth.php";
+require_once "$core/validation.php";
 
 // Rate limiting setup
-$rateLimitFile = "$root/logs/rate_limit.json";
+$rateLimitFile = "$logDir/rate_limit.json";
 if (!file_exists($rateLimitFile)) {
     file_put_contents($rateLimitFile, json_encode([]));
 }
