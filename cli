@@ -1,0 +1,75 @@
+#!/usr/bin/env php
+<?php
+// Define root and database file
+$root   = __DIR__;
+$dbFile = "$root/database/database.sqlite";
+
+// Make sure database file exists
+if (!file_exists($dbFile)) {
+    if (!is_dir(dirname($dbFile))) {
+        mkdir(dirname($dbFile), 0777, true);
+    }
+    file_put_contents($dbFile, '');
+}
+
+require_once __DIR__ . '/includes/db.php';
+
+$argv = $_SERVER['argv'] ?? [];
+$command = $argv[1] ?? null;
+$subCommand = $argv[2] ?? null;
+
+switch ($command) {
+
+    // -------------------------
+    // Database commands
+    // -------------------------
+    case 'db':
+        switch ($subCommand) {
+            case 'make:migration':
+                $name = $argv[3] ?? null;
+                if (!$name) exit("Migration name required.\n");
+                $migrationDir = __DIR__ . '/database/migrations';
+                if (!is_dir($migrationDir)) mkdir($migrationDir, 0777, true);
+                $file = db_create_migration($name, $migrationDir);
+                echo "Migration created: $file\n";
+                break;
+
+            case 'migrate':
+                $migrationDir = __DIR__ . '/database/migrations';
+                if (!is_dir($migrationDir)) exit("No migrations directory found.\n");
+                db_migrate($migrationDir);
+                echo "Migrations executed.\n";
+                break;
+
+            default:
+                echo "Unknown db command: $subCommand\n";
+                break;
+        }
+        break;
+
+    // -------------------------
+    // Test commands
+    // -------------------------
+    case 'test':
+        switch ($subCommand) {
+            case 'run':
+                $runnerFile = __DIR__ . '/tests/run.php';
+                if (!file_exists($runnerFile)) exit("Test runner not found: $runnerFile\n");
+
+                require $runnerFile;
+                break;
+
+            default:
+                echo "Unknown test command: $subCommand\n";
+                break;
+        }
+        break;
+
+    default:
+        echo "Unknown command: $command\n";
+        echo "Usage:\n";
+        echo "  cli db make:migration NAME\n";
+        echo "  cli db migrate\n";
+        echo "  cli test run\n";
+        break;
+}

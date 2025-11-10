@@ -1,0 +1,7 @@
+.env
+
+database/database.sqlite
+logs/*
+tests/test.sqlite
+
+!.gitkeep
