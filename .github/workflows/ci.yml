@@ -20,7 +20,7 @@ jobs:
           coverage: none
 
       - name: Make CLI executable
-        run: chmod +x ./cli || true
+        run: chmod +x ./lighthouse || true
 
       - name: Run tests
-        run: ./cli test run
+        run: ./lighthouse test run
