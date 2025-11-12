@@ -14,7 +14,7 @@
 
     <!-- Theme -->
     <link rel="stylesheet" href="/css/<?= htmlspecialchars(config('THEME')) ?>">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/custom.css">
 
     <!-- Scripts -->
     <script src="/js/htmx.min.js"></script>
@@ -40,18 +40,12 @@
             <ul>
                 <li><a href="/"><strong>Acme Corp</strong></a></li>
             </ul>
-            <?php if (!auth_user()): ?>
-                <ul>
-                    <li><a href="/login" class="contrast">Login</a></li>
-                    <li><a href="/register" class="contrast">Register</a></li>
-                </ul>
-            <?php endif; ?>
+            <ul>
+                <li><a href="/logout" class="contrast">Logout</a></li>
+            </ul>
         </nav>
         <?= $content ?>
     </main>
-    <footer class="container">
-        <p>&copy; <?= htmlspecialchars(config('APP_NAME')) ?> - <?= date('Y') ?> · v<?= htmlspecialchars(config('APP_VERSION')) ?></p>
-    </footer>
 </body>
 
 </html>

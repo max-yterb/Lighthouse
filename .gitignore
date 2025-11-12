@@ -5,3 +5,5 @@ logs/*
 tests/test.sqlite
 
 !.gitkeep
+
+*-workspace

@@ -18,31 +18,7 @@ route('/htmx', function () {
     return '<p>Hello from HTMX</p>';
 });
 
-route('/register', function () {
-    return view('register.php');
-});
-
-route('/login', function () {
-    return view('login.php');
-});
-
-route('/forgot-password', function () {
-    return view('forgot_password.php');
-});
-
-route('/reset-password', function () {
-    return view('reset_password.php');
-});
-
-route('/dashboard', function () {
-    return view('dashboard.php', [], '_dashboard');
-});
-
-route('/logout', function () {
-    auth_logout();
-    header('Location: /');
-    exit;
-});
+require_once __DIR__ . '/../auth_routes.php';
 
 // Dispatch the route
 dispatch($route, $_SERVER['REQUEST_METHOD']);

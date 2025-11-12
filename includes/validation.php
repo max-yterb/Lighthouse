@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Validation functions for MaxStack
+ * Validation functions for Lighthouse
  *
  * Provides input validation functions for various data types and constraints.
  */

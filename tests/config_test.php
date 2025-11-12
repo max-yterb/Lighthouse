@@ -41,7 +41,7 @@ run_test(
         file_put_contents($env, "APP_NAME=FromDotEnv\nAPP_URL=http://dotenv.test\n");
 
         // Clear any cached config
-        $cache_path = sys_get_temp_dir() . '/maxstack_env_cache.php';
+        $cache_path = sys_get_temp_dir() . '/lighthouse_env_cache.php';
         if (file_exists($cache_path)) unlink($cache_path);
 
         $config = require 'includes/config.php';

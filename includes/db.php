@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Database functions for MaxStack
+ * Database functions for Lighthouse
  *
  * Provides SQLite database operations, CRUD functions, and migration management.
  */

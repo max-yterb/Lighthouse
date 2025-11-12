@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * MaxStack Config Loader
+ * Lighthouse Config Loader
  * - Loads from environment first
  * - Falls back to .env
  * - Optionally caches parsed values in production
@@ -75,7 +75,7 @@ if (!function_exists('bool_from_env')) {
 // --- main logic ---
 $root = realpath(__DIR__ . '/../') ?: __DIR__ . '/..';
 $dotenv_path = $root . '/.env';
-$cache_path  = sys_get_temp_dir() . '/maxstack_env_cache.php';
+$cache_path  = sys_get_temp_dir() . '/lighthouse_env_cache.php';
 
 $app_env = getenv('APP_ENV') ?: 'local';
 $use_cache = false;
@@ -148,19 +148,20 @@ if (!empty($missing_vars)) {
 
 // --- build config ---
 $config = [
-    'APP_NAME'      => env_or('APP_NAME', 'MaxStack'),
+    'APP_NAME'      => env_or('APP_NAME', 'Lighthouse'),
     'APP_ENV'       => env_or('APP_ENV', 'local'),
     'APP_DEBUG'     => bool_from_env(env_or('APP_DEBUG', (env_or('APP_ENV', 'local') === 'local'))),
     'APP_URL'       => normalize_url(env_or('APP_URL', 'http://localhost:8000')),
     'TIMEZONE'      => env_or('TIMEZONE', 'UTC'),
     'LOG_FILE'      => env_or('LOG_FILE', $root . '/logs/error_log.txt'),
     'THEME'         => env_or('THEME', 'pico.blue.min.css'),
-    'DEFAULT_TITLE' => env_or('DEFAULT_TITLE', 'Welcome to MaxStack'),
+    'DEFAULT_TITLE' => env_or('DEFAULT_TITLE', 'Welcome to Lighthouse'),
     'DEFAULT_DESC'  => env_or('DEFAULT_DESC', 'A minimal, predictable PHP micro-stack.'),
     'DEFAULT_CANONICAL' => env_or('DEFAULT_CANONICAL', env_or('APP_URL', 'http://localhost:8000')),
     'DEFAULT_AUTHOR' => env_or('DEFAULT_AUTHOR', 'Max'),
     'DEFAULT_KEYWORDS' => env_or('DEFAULT_KEYWORDS', 'php, microstack, htmx, pico.css'),
     'DEFAULT_CHARSET' => env_or('DEFAULT_CHARSET', 'utf-8'),
+    'APP_VERSION'  => (file_exists($root . '/VERSION') ? trim(file_get_contents($root . '/VERSION')) : 'dev'),
     '_CACHE_USED'   => $use_cache,
     '_CACHE_PATH'   => $cache_path,
 ];

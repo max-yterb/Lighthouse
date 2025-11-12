@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Authentication functions for MaxStack
+ * Authentication functions for Lighthouse
  *
  * Provides session-based authentication with password hashing and user management.
  */

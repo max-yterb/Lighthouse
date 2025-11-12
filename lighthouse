@@ -12,6 +12,7 @@ if (!file_exists($dbFile)) {
     file_put_contents($dbFile, '');
 }
 
+require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/db.php';
 
 $argv = $_SERVER['argv'] ?? [];
@@ -65,11 +66,70 @@ switch ($command) {
         }
         break;
 
+    // -------------------------
+    // Version command
+    // -------------------------
+    case 'version':
+        echo (string) (config('APP_VERSION') ?? 'dev') . "\n";
+        break;
+
+    // -------------------------
+    // New project scaffold
+    // -------------------------
+    case 'new':
+        $target = $subCommand ?: null;
+        if (!$target) {
+            echo "Project name or path required.\n";
+            exit(1);
+        }
+        $targetPath = $target;
+        if (file_exists($targetPath)) {
+            echo "Target path already exists: $targetPath\n";
+            exit(1);
+        }
+        $source = __DIR__;
+
+        $exclude = [
+            '.git',
+            '.github',
+            'logs',
+            'database/database.sqlite',
+            'tests',
+            'vendor',
+        ];
+
+        $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::SELF_FIRST);
+        foreach ($rii as $item) {
+            $rel = ltrim(str_replace($source, '', $item->getPathname()), '/');
+            $skip = false;
+            foreach ($exclude as $ex) {
+                if ($rel === $ex || str_starts_with($rel, rtrim($ex, '/') . '/')) {
+                    $skip = true;
+                    break;
+                }
+            }
+            if ($skip) continue;
+            $dest = rtrim($targetPath, '/') . '/' . $rel;
+            if ($item->isDir()) {
+                if (!is_dir($dest)) mkdir($dest, 0777, true);
+            } else {
+                if (!is_dir(dirname($dest))) mkdir(dirname($dest), 0777, true);
+                copy($item->getPathname(), $dest);
+            }
+        }
+        if (file_exists($targetPath . '/database/database.sqlite')) {
+            unlink($targetPath . '/database/database.sqlite');
+        }
+        echo "Project created at $targetPath\n";
+        break;
+
     default:
         echo "Unknown command: $command\n";
         echo "Usage:\n";
         echo "  cli db make:migration NAME\n";
         echo "  cli db migrate\n";
         echo "  cli test run\n";
+        echo "  cli version\n";
+        echo "  cli new PATH\n";
         break;
 }
