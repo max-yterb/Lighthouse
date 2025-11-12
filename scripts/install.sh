@@ -38,7 +38,7 @@ git clone --depth 1 "$GIT_URL" "$TARGET_DIR"
 rm -rf "$TARGET_DIR/.git"
 
 # Ensure CLI is executable
-chmod +x "$TARGET_DIR/cli" || true
+chmod +x "$TARGET_DIR/lighthouse" || true
 
 # Remove development database if present
 [ -f "$TARGET_DIR/database/database.sqlite" ] && rm -f "$TARGET_DIR/database/database.sqlite"
@@ -51,8 +51,8 @@ Next steps:
   php -S localhost:8000 -t public/
 
 Useful commands:
-  ./cli version
-  ./cli db make:migration CreateUsers
-  ./cli db migrate
-  ./cli test run
+  ./lighthouse version
+  ./lighthouse db make:migration CreateUsers
+  ./lighthouse db migrate
+  ./lighthouse test run
 EOT
