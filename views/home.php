@@ -38,7 +38,7 @@
         <div class="lighthouse-feature">
             <div class="lighthouse-feature-icon">🚀</div>
             <h3>Deploy Anywhere</h3>
-            <p>Single file deployment. Works on any server with PHP. No complex setup or configuration required.</p>
+            <p>Simple deployment. Works on any server with PHP. No complex setup or configuration required.</p>
         </div>
 
         <div class="lighthouse-feature">

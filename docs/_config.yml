@@ -1,0 +1,16 @@
+title: Lighthouse PHP Framework
+description: A minimal, predictable PHP micro-framework for building modern web applications
+theme: jekyll-theme-cayman
+
+plugins:
+  - jekyll-relative-links
+
+relative_links:
+  enabled: true
+  collections: true
+
+markdown: kramdown
+highlighter: rouge
+
+github:
+  repository_url: https://github.com/max-yterb/Lighthouse
