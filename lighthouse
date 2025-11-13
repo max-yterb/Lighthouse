@@ -85,7 +85,7 @@ switch ($command) {
     // -------------------------
     case 'version':
         if ($isGlobalInstall) {
-            echo "0.4.0\n"; // Embedded version for global install
+            echo "0.5.0\n"; // Embedded version for global install
         } else {
             echo (string) (config('APP_VERSION') ?? 'dev') . "\n";
         }
@@ -131,7 +131,7 @@ switch ($command) {
         }
 
         // Copy files excluding development files
-        $exclude = ['.git', '.github', 'logs', 'database/database.sqlite', 'tests', 'vendor'];
+        $exclude = ['.git', '.github', 'database/database.sqlite', 'tests', 'vendor'];
 
         $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($tempDir, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::SELF_FIRST);
         foreach ($rii as $item) {
@@ -165,6 +165,12 @@ switch ($command) {
         if (file_exists($targetPath . '/.env.example')) {
             copy($targetPath . '/.env.example', $targetPath . '/.env');
             echo "Copied .env.example to .env\n";
+        }
+
+        // Ensure logs directory exists
+        if (!is_dir($targetPath . '/logs')) {
+            mkdir($targetPath . '/logs', 0777, true);
+            echo "Created logs directory\n";
         }
 
         echo "Project created at $targetPath\n";
