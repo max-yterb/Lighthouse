@@ -42,7 +42,7 @@ function db_seed(string $file): void
  * Inserts a new record into the database
  *
  * @param string $table The table name
- * @param array $data Associative array of column => value pairs
+ * @param array<string, mixed> $data Associative array of column => value pairs
  * @return int|null The inserted record ID or null on failure
  */
 function db_insert(string $table, array $data): ?int
@@ -67,8 +67,8 @@ function db_insert(string $table, array $data): ?int
  * Updates records in the database
  *
  * @param string $table The table name
- * @param array $data Associative array of column => value pairs to update
- * @param array $where Associative array of column => value pairs for WHERE clause
+ * @param array<string, mixed> $data Associative array of column => value pairs to update
+ * @param array<string, mixed> $where Associative array of column => value pairs for WHERE clause
  * @return bool True on success, false on failure
  */
 function db_update(string $table, array $data, array $where): bool
@@ -100,7 +100,7 @@ function db_update(string $table, array $data, array $where): bool
  * Deletes records from the database
  *
  * @param string $table The table name
- * @param array $where Associative array of column => value pairs for WHERE clause
+ * @param array<string, mixed> $where Associative array of column => value pairs for WHERE clause
  * @return bool True on success, false on failure
  */
 function db_delete(string $table, array $where): bool
@@ -126,10 +126,10 @@ function db_delete(string $table, array $where): bool
  * Selects records from the database
  *
  * @param string $table The table name
- * @param array $where Associative array of column => value pairs for WHERE clause
+ * @param array<string, mixed> $where Associative array of column => value pairs for WHERE clause
  * @param string $orderBy ORDER BY clause (optional)
  * @param int $limit Maximum number of records to return (0 for no limit)
- * @return array Array of associative arrays representing the records
+ * @return array<array<string, mixed>> Array of associative arrays representing the records
  */
 function db_select(string $table, array $where = [], string $orderBy = '', int $limit = 0): array
 {
@@ -166,8 +166,8 @@ function db_select(string $table, array $where = [], string $orderBy = '', int $
  * Selects a single record from the database
  *
  * @param string $table The table name
- * @param array $where Associative array of column => value pairs for WHERE clause
- * @return array|null The record as an associative array or null if not found
+ * @param array<string, mixed> $where Associative array of column => value pairs for WHERE clause
+ * @return array<string, mixed>|null The record as an associative array or null if not found
  */
 function db_select_one(string $table, array $where = []): ?array
 {

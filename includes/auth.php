@@ -12,7 +12,7 @@
  * @param int $userId The user ID to log in
  * @return void
  */
-function auth_login($userId)
+function auth_login(int $userId): void
 {
     $_SESSION['user_id'] = $userId;
 }
@@ -22,7 +22,7 @@ function auth_login($userId)
  *
  * @return void
  */
-function auth_logout()
+function auth_logout(): void
 {
     session_destroy();
     $_SESSION = [];
@@ -33,7 +33,7 @@ function auth_logout()
  *
  * @return int|null The user ID if logged in, null otherwise
  */
-function auth_user()
+function auth_user(): ?int
 {
     return $_SESSION['user_id'] ?? null;
 }
@@ -44,7 +44,7 @@ function auth_user()
  * @param string $password The plain text password
  * @return string The hashed password
  */
-function auth_hash_password($password)
+function auth_hash_password(string $password): string
 {
     return password_hash($password, PASSWORD_BCRYPT);
 }
@@ -56,7 +56,7 @@ function auth_hash_password($password)
  * @param string $hash The hashed password
  * @return bool True if password matches, false otherwise
  */
-function auth_verify_password($password, $hash)
+function auth_verify_password(string $password, string $hash): bool
 {
     return password_verify($password, $hash);
 }

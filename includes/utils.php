@@ -1,6 +1,18 @@
 <?php
+
+/**
+ * Global routes array for storing application routes
+ * @var array<array{pattern: string, handler: callable}>
+ */
 $routes = [];
 
+/**
+ * Registers a route with a pattern and handler
+ *
+ * @param string $pattern URL pattern (supports {param} syntax)
+ * @param callable $handler Function to handle the route
+ * @return void
+ */
 function route(string $pattern, callable $handler): void
 {
     global $routes;
@@ -10,6 +22,12 @@ function route(string $pattern, callable $handler): void
     ];
 }
 
+/**
+ * Dispatches a request to the appropriate route handler
+ *
+ * @param string $requestUri The URI to match against registered routes
+ * @return void
+ */
 function dispatch(string $requestUri): void
 {
     global $routes, $content;
@@ -34,13 +52,27 @@ function dispatch(string $requestUri): void
 }
 
 
-function outlog($msg)
+/**
+ * Logs a message to the error log file
+ *
+ * @param string $msg The message to log
+ * @return void
+ */
+function outlog(string $msg): void
 {
     global $logDir;
     file_put_contents($logDir . 'error_log.txt', date('[Y-m-d H:i:s] ') . $msg . PHP_EOL, FILE_APPEND);
 }
 
-function view($file, $view_vars = [], $useLayout = null)
+/**
+ * Renders a view file with optional variables and layout
+ *
+ * @param string $file The view file to render
+ * @param array<string, mixed> $view_vars Variables to pass to the view
+ * @param string|null $useLayout Optional layout override
+ * @return string|false The rendered view content or false on failure
+ */
+function view(string $file, array $view_vars = [], ?string $useLayout = null): string|false
 {
     global $viewDir, $layout, $meta;
     if ($useLayout !== null) $layout = $useLayout;
@@ -59,7 +91,13 @@ function view($file, $view_vars = [], $useLayout = null)
     return ob_get_clean();
 }
 
-function exception_handler($e)
+/**
+ * Handles uncaught exceptions
+ *
+ * @param Throwable $e The exception to handle
+ * @return void
+ */
+function exception_handler(Throwable $e): void
 {
     global $content;
     outlog("{$e->getMessage()} in {$e->getFile()}:{$e->getLine()}");
@@ -69,12 +107,17 @@ function exception_handler($e)
     $content = "An unexpected error occurred.";
 }
 
-function shutdown_handler()
+/**
+ * Handles shutdown and fatal errors
+ *
+ * @return void
+ */
+function shutdown_handler(): void
 {
     global $content, $hxRequest, $viewDir, $layout, $meta;
     $err = error_get_last();
     if ($err && in_array($err['type'], [E_ERROR, E_PARSE, E_CORE_ERROR])) {
-        log("{$err['message']} in {$err['file']}:{$err['line']}");
+        outlog("{$err['message']} in {$err['file']}:{$err['line']}");
         if (!defined('TESTING')) {
             http_response_code(500);
         }
@@ -91,46 +134,100 @@ function shutdown_handler()
     }
 }
 
-function sanitize_string(string $input): string
+/**
+ * Sanitizes a string by trimming and escaping HTML characters
+ *
+ * @param mixed $input The input to sanitize
+ * @return string The sanitized string
+ */
+function sanitize_string(mixed $input): string
 {
-    return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars(trim((string)$input), ENT_QUOTES, 'UTF-8');
 }
 
-function sanitize_email(string $email): string
+/**
+ * Sanitizes an email address
+ *
+ * @param mixed $email The email to sanitize
+ * @return string The sanitized email
+ */
+function sanitize_email(mixed $email): string
 {
-    return filter_var(trim($email), FILTER_SANITIZE_EMAIL);
+    return filter_var(trim((string)$email), FILTER_SANITIZE_EMAIL);
 }
 
-function sanitize_int($input): int
+/**
+ * Sanitizes input to an integer
+ *
+ * @param mixed $input The input to sanitize
+ * @return int The sanitized integer
+ */
+function sanitize_int(mixed $input): int
 {
     return (int) filter_var($input, FILTER_SANITIZE_NUMBER_INT);
 }
 
-function sanitize_float($input): float
+/**
+ * Sanitizes input to a float
+ *
+ * @param mixed $input The input to sanitize
+ * @return float The sanitized float
+ */
+function sanitize_float(mixed $input): float
 {
     return (float) filter_var($input, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 }
 
-function sanitize_url(string $url): string
+/**
+ * Sanitizes a URL
+ *
+ * @param mixed $url The URL to sanitize
+ * @return string The sanitized URL
+ */
+function sanitize_url(mixed $url): string
 {
-    return filter_var(trim($url), FILTER_SANITIZE_URL);
+    return filter_var(trim((string)$url), FILTER_SANITIZE_URL);
 }
 
+/**
+ * Gets the CSRF token from the session
+ *
+ * @return string The CSRF token or empty string if not set
+ */
 function csrf_token(): string
 {
     return $_SESSION['csrf_token'] ?? '';
 }
 
+/**
+ * Generates a hidden CSRF token input field
+ *
+ * @return string The HTML input field
+ */
 function csrf_field(): string
 {
     return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(csrf_token()) . '">';
 }
 
+/**
+ * Validates a CSRF token
+ *
+ * @param string $token The token to validate
+ * @return bool Whether the token is valid
+ */
 function validate_csrf(string $token): bool
 {
     return hash_equals($_SESSION['csrf_token'] ?? '', $token);
 }
 
+/**
+ * Checks if a request is within rate limits
+ *
+ * @param string $key The rate limit key (e.g., IP address)
+ * @param int $maxRequests Maximum number of requests allowed
+ * @param int $windowSeconds Time window in seconds
+ * @return bool True if within limits, false if rate limited
+ */
 function check_rate_limit(string $key, int $maxRequests = 5, int $windowSeconds = 300): bool
 {
     global $rateLimitFile;
@@ -153,6 +250,12 @@ function check_rate_limit(string $key, int $maxRequests = 5, int $windowSeconds 
     return $data[$key]['count'] <= $maxRequests;
 }
 
+/**
+ * Gets the number of remaining requests for a rate limit key
+ *
+ * @param string $key The rate limit key (e.g., IP address)
+ * @return int Number of remaining requests
+ */
 function get_rate_limit_remaining(string $key): int
 {
     global $rateLimitFile;

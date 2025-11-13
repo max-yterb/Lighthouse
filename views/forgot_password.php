@@ -1,5 +1,10 @@
 <?php
+
+declare(strict_types=1);
+
+/** @var array<string> $errors */
 $errors = [];
+/** @var string $success */
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -33,31 +38,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<h1>Forgot Password</h1>
+<div class="lighthouse-auth-container">
+    <div class="lighthouse-card">
+        <h1 style="text-align: center; margin-bottom: 2rem;">Reset Password</h1>
+        
+        <?php if (!empty($errors)): ?>
+            <div class="lighthouse-alert error">
+                <ul style="margin: 0; padding-left: 1rem;">
+                    <?php foreach ($errors as $error): ?>
+                        <li><?= htmlspecialchars($error) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
 
-<?php if (!empty($errors)): ?>
-    <div style="color: red;">
-        <ul>
-            <?php foreach ($errors as $error): ?>
-                <li><?= htmlspecialchars($error) ?></li>
-            <?php endforeach; ?>
-        </ul>
+        <?php if ($success): ?>
+            <div class="lighthouse-alert success">
+                <p style="margin: 0;"><?= htmlspecialchars($success) ?></p>
+            </div>
+        <?php else: ?>
+            <p style="text-align: center; margin-bottom: 2rem; color: var(--lighthouse-sea-slate);">
+                Enter your email address and we'll send you instructions to reset your password.
+            </p>
+            
+            <form method="POST" action="/forgot-password">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required placeholder="Enter your email">
+
+                <?= csrf_field() ?>
+
+                <button type="submit" style="width: 100%; margin-top: 1rem;">Send Reset Instructions</button>
+            </form>
+        <?php endif; ?>
+
+        <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--lighthouse-sky-mist);">
+            <p><a href="/login">← Back to Sign In</a></p>
+        </div>
     </div>
-<?php endif; ?>
-
-<?php if ($success): ?>
-    <div style="color: green;">
-        <p><?= htmlspecialchars($success) ?></p>
-    </div>
-<?php else: ?>
-    <form method="POST" action="/forgot-password">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
-
-        <?= csrf_field() ?>
-
-        <button type="submit">Send Reset Instructions</button>
-    </form>
-<?php endif; ?>
-
-<p><a href="/login">Back to Login</a></p>
+</div>

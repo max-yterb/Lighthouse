@@ -12,7 +12,7 @@
  * @param mixed $value The value to validate
  * @return bool True if the value is not empty, false otherwise
  */
-function validate_required($value): bool
+function validate_required(mixed $value): bool
 {
     return !empty($value) || $value === '0';
 }
@@ -23,7 +23,7 @@ function validate_required($value): bool
  * @param mixed $value The value to validate
  * @return bool True if the value is a valid email, false otherwise
  */
-function validate_email($value): bool
+function validate_email(mixed $value): bool
 {
     return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
 }
@@ -35,7 +35,7 @@ function validate_email($value): bool
  * @param int $length The minimum required length
  * @return bool True if the value meets the minimum length, false otherwise
  */
-function validate_min_length($value, int $length): bool
+function validate_min_length(mixed $value, int $length): bool
 {
     return strlen((string)$value) >= $length;
 }
@@ -47,7 +47,7 @@ function validate_min_length($value, int $length): bool
  * @param int $length The maximum allowed length
  * @return bool True if the value does not exceed the maximum length, false otherwise
  */
-function validate_max_length($value, int $length): bool
+function validate_max_length(mixed $value, int $length): bool
 {
     return strlen((string)$value) <= $length;
 }
@@ -58,7 +58,7 @@ function validate_max_length($value, int $length): bool
  * @param mixed $value The value to validate
  * @return bool True if the value is numeric, false otherwise
  */
-function validate_numeric($value): bool
+function validate_numeric(mixed $value): bool
 {
     return is_numeric($value);
 }
@@ -69,7 +69,7 @@ function validate_numeric($value): bool
  * @param mixed $value The value to validate
  * @return bool True if the value is an integer, false otherwise
  */
-function validate_integer($value): bool
+function validate_integer(mixed $value): bool
 {
     return filter_var($value, FILTER_VALIDATE_INT) !== false;
 }
@@ -80,7 +80,7 @@ function validate_integer($value): bool
  * @param mixed $value The value to validate
  * @return bool True if the value contains only alphabetic characters, false otherwise
  */
-function validate_alphabetic($value): bool
+function validate_alphabetic(mixed $value): bool
 {
     return ctype_alpha((string)$value);
 }
@@ -91,7 +91,7 @@ function validate_alphabetic($value): bool
  * @param mixed $value The value to validate
  * @return bool True if the value contains only alphanumeric characters, false otherwise
  */
-function validate_alpha_numeric($value): bool
+function validate_alpha_numeric(mixed $value): bool
 {
     return ctype_alnum((string)$value);
 }
@@ -102,7 +102,7 @@ function validate_alpha_numeric($value): bool
  * @param mixed $value The value to validate
  * @return bool True if the value is a valid URL, false otherwise
  */
-function validate_url($value): bool
+function validate_url(mixed $value): bool
 {
     return filter_var($value, FILTER_VALIDATE_URL) !== false;
 }
@@ -113,7 +113,7 @@ function validate_url($value): bool
  * @param mixed $value The value to validate
  * @return bool True if the value is a valid IP address, false otherwise
  */
-function validate_ip($value): bool
+function validate_ip(mixed $value): bool
 {
     return filter_var($value, FILTER_VALIDATE_IP) !== false;
 }
@@ -125,7 +125,7 @@ function validate_ip($value): bool
  * @param string $format The expected date format (default: Y-m-d)
  * @return bool True if the value matches the date format, false otherwise
  */
-function validate_date($value, string $format = 'Y-m-d'): bool
+function validate_date(mixed $value, string $format = 'Y-m-d'): bool
 {
     $d = DateTime::createFromFormat($format, (string)$value);
     return $d && $d->format($format) === (string)$value;
@@ -138,7 +138,7 @@ function validate_date($value, string $format = 'Y-m-d'): bool
  * @param array $array The array of allowed values
  * @return bool True if the value is in the array, false otherwise
  */
-function value_in_array($value, array $array): bool
+function value_in_array(mixed $value, array $array): bool
 {
     return in_array($value, $array, true);
 }

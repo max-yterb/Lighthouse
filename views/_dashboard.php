@@ -14,7 +14,7 @@
 
     <!-- Theme -->
     <link rel="stylesheet" href="/css/<?= htmlspecialchars(config('THEME')) ?>">
-    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/style.css">
 
     <!-- Scripts -->
     <script src="/js/htmx.min.js"></script>
@@ -38,7 +38,13 @@
     <main class="container">
         <nav>
             <ul>
-                <li><a href="/"><strong>Acme Corp</strong></a></li>
+                <li>
+                    <a href="/" class="lighthouse-brand">
+                        <img src="/Logo.png" alt="Lighthouse Logo" class="lighthouse-logo">
+                        <strong>Lighthouse</strong>
+                        <span class="lighthouse-version">v<?= htmlspecialchars(config('APP_VERSION')) ?></span>
+                    </a>
+                </li>
             </ul>
             <ul>
                 <li><a href="/logout" class="contrast">Logout</a></li>
@@ -46,6 +52,12 @@
         </nav>
         <?= $content ?>
     </main>
+    <footer class="lighthouse-footer">
+        <div class="container">
+            <p>&copy; <?= htmlspecialchars(config('APP_NAME')) ?> - <?= date('Y') ?> · 
+            Built with PHP <?= PHP_VERSION ?> & Lighthouse Framework</p>
+        </div>
+    </footer>
 </body>
 
 </html>

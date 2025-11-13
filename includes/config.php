@@ -10,6 +10,12 @@ declare(strict_types=1);
  */
 
 if (!function_exists('load_dotenv')) {
+    /**
+     * Loads environment variables from a .env file
+     *
+     * @param string $path Path to the .env file
+     * @return array<string, string> Parsed environment variables
+     */
     function load_dotenv(string $path): array
     {
         if (!file_exists($path)) return [];
@@ -48,6 +54,12 @@ if (!function_exists('load_dotenv')) {
 }
 
 if (!function_exists('normalize_url')) {
+    /**
+     * Normalizes a URL by trimming and removing trailing slashes
+     *
+     * @param string $url The URL to normalize
+     * @return string The normalized URL
+     */
     function normalize_url(string $url): string
     {
         $url = trim($url);
@@ -56,7 +68,14 @@ if (!function_exists('normalize_url')) {
 }
 
 if (!function_exists('env_or')) {
-    function env_or(string $name, $default = null)
+    /**
+     * Gets an environment variable with a default fallback
+     *
+     * @param string $name The environment variable name
+     * @param mixed $default The default value if not found
+     * @return mixed The environment variable value or default
+     */
+    function env_or(string $name, mixed $default = null): mixed
     {
         $v = getenv($name);
         return $v === false ? $default : $v;
@@ -64,7 +83,13 @@ if (!function_exists('env_or')) {
 }
 
 if (!function_exists('bool_from_env')) {
-    function bool_from_env($value): bool
+    /**
+     * Converts an environment variable value to a boolean
+     *
+     * @param mixed $value The value to convert
+     * @return bool The boolean representation
+     */
+    function bool_from_env(mixed $value): bool
     {
         if (is_bool($value)) return $value;
         $value = strtolower((string)$value);
@@ -168,7 +193,13 @@ $config = [
 
 // Optional helper for global access (if desired)
 if (!function_exists('config')) {
-    function config(?string $key = null)
+    /**
+     * Gets a configuration value by key or all configuration if no key provided
+     *
+     * @param string|null $key The configuration key to retrieve
+     * @return mixed The configuration value or all configuration array
+     */
+    function config(?string $key = null): mixed
     {
         global $config;
         return $key ? ($config[$key] ?? null) : $config;

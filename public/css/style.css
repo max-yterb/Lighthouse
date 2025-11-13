@@ -1,0 +1,364 @@
+/* Lighthouse Brand Colors - Extending Pico.css */
+:root {
+  /* Brand Color Palette */
+  --lighthouse-beacon-red: #E63946;
+  --lighthouse-sea-slate: #1D3557;
+  --lighthouse-fog-white: #F1FAEE;
+  --lighthouse-sky-mist: #A8DADC;
+  --lighthouse-signal-blue: #457B9D;
+
+  /* Override Pico CSS Variables with Brand Colors */
+  --pico-primary-500: var(--lighthouse-signal-blue);
+  --pico-primary-600: #3a6b8a;
+  --pico-primary-700: #2e5a77;
+
+  /* Background colors */
+  --pico-background-color: var(--lighthouse-fog-white);
+  --pico-card-background-color: #ffffff;
+  --pico-card-sectioning-background-color: var(--lighthouse-sky-mist);
+
+  /* Text colors */
+  --pico-color: var(--lighthouse-sea-slate);
+  --pico-h1-color: var(--lighthouse-sea-slate);
+  --pico-h2-color: var(--lighthouse-sea-slate);
+  --pico-h3-color: var(--lighthouse-sea-slate);
+
+  /* Border colors */
+  --pico-border-color: var(--lighthouse-sky-mist);
+  --pico-table-border-color: var(--lighthouse-sky-mist);
+
+  /* Form elements */
+  --pico-form-element-border-color: var(--lighthouse-sky-mist);
+  --pico-form-element-focus-color: var(--lighthouse-signal-blue);
+
+  /* Links */
+  --pico-primary: var(--lighthouse-beacon-red);
+  --pico-primary-hover: #d32f3f;
+  --pico-primary-focus: var(--lighthouse-beacon-red);
+
+  /* Buttons */
+  --pico-primary-background: var(--lighthouse-signal-blue);
+  --pico-primary-border: var(--lighthouse-signal-blue);
+  --pico-secondary-background: var(--lighthouse-sky-mist);
+  --pico-secondary-border: var(--lighthouse-sky-mist);
+  --pico-secondary-color: var(--lighthouse-sea-slate);
+}
+
+/* Force Fog White background */
+body {
+  background-color: var(--lighthouse-fog-white) !important;
+  animation: fadeIn 0.5s ease-in;
+}
+
+html {
+  background-color: var(--lighthouse-fog-white) !important;
+}
+
+/* Page transition animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Main content fade-in */
+main {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Hero section enhanced animation - applied to existing .lighthouse-hero rule */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Feature cards staggered animation */
+.lighthouse-feature {
+  animation: fadeInScale 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.lighthouse-feature:nth-child(1) { animation-delay: 0.1s; }
+.lighthouse-feature:nth-child(2) { animation-delay: 0.2s; }
+.lighthouse-feature:nth-child(3) { animation-delay: 0.3s; }
+.lighthouse-feature:nth-child(4) { animation-delay: 0.4s; }
+.lighthouse-feature:nth-child(5) { animation-delay: 0.5s; }
+.lighthouse-feature:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Auth cards smooth entrance */
+.lighthouse-auth-container {
+  animation: fadeInUp 0.7s ease-out;
+}
+
+/* Custom Lighthouse Components */
+.lighthouse-hero {
+  background: linear-gradient(135deg, var(--lighthouse-signal-blue) 0%, var(--lighthouse-sky-mist) 100%);
+  color: white;
+  padding: 4rem 0;
+  text-align: center;
+  margin-bottom: 2rem;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.lighthouse-hero h1 {
+  color: white;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.lighthouse-hero p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  margin-bottom: 2rem;
+}
+
+.lighthouse-logo {
+  max-height: 60px;
+  width: auto;
+  margin-right: 1rem;
+  vertical-align: middle;
+}
+
+.lighthouse-brand {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  color: var(--lighthouse-sea-slate);
+  text-decoration: none;
+}
+
+.lighthouse-brand:hover {
+  color: var(--lighthouse-beacon-red);
+  text-decoration: none;
+}
+
+.lighthouse-card {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(29, 53, 87, 0.1);
+  border: 1px solid var(--lighthouse-sky-mist);
+  margin-bottom: 2rem;
+}
+
+.lighthouse-auth-container {
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.lighthouse-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columns on desktop */
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+/* Dashboard specific grid - 2 columns */
+.dashboard .lighthouse-feature-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.lighthouse-feature {
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid var(--lighthouse-sky-mist);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lighthouse-feature:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(29, 53, 87, 0.15);
+}
+
+.lighthouse-feature-icon {
+  font-size: 2.5rem;
+  color: var(--lighthouse-signal-blue);
+  margin-bottom: 1rem;
+}
+
+.lighthouse-alert {
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.lighthouse-alert.error {
+  background-color: rgba(230, 57, 70, 0.1);
+  border: 1px solid var(--lighthouse-beacon-red);
+  color: var(--lighthouse-beacon-red);
+}
+
+.lighthouse-alert.success {
+  background-color: rgba(69, 123, 157, 0.1);
+  border: 1px solid var(--lighthouse-signal-blue);
+  color: var(--lighthouse-signal-blue);
+}
+
+.lighthouse-footer {
+  background-color: var(--lighthouse-sea-slate);
+  color: white !important;
+  text-align: center;
+  padding: 2rem 0;
+  margin-top: 4rem;
+}
+
+.lighthouse-footer p {
+  color: white !important;
+  margin: 0;
+}
+
+.lighthouse-footer a {
+  color: var(--lighthouse-sky-mist);
+}
+
+.lighthouse-footer a:hover {
+  color: var(--lighthouse-beacon-red);
+}
+
+/* Navigation enhancements */
+nav ul li {
+  margin-left: 1rem;
+}
+
+nav ul li:first-child {
+  margin-left: 0;
+}
+
+nav ul li a.contrast {
+  background-color: transparent;
+  border: 1px solid var(--lighthouse-beacon-red);
+  color: var(--lighthouse-beacon-red);
+}
+
+nav ul li a.contrast:hover {
+  background-color: var(--lighthouse-beacon-red);
+  color: white;
+}
+
+/* Form styling */
+form {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid var(--lighthouse-sky-mist);
+}
+
+/* Button styling */
+button[type="submit"],
+input[type="submit"] {
+  background-color: var(--lighthouse-signal-blue);
+  border-color: var(--lighthouse-signal-blue);
+  color: white;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+button[type="submit"]:hover,
+input[type="submit"]:hover {
+  background-color: #3a6b8a;
+  border-color: #3a6b8a;
+  transform: translateY(-1px);
+}
+
+.lighthouse-btn {
+  background-color: white;
+  border: 2px solid var(--lighthouse-signal-blue);
+  color: var(--lighthouse-signal-blue);
+  font-weight: 600;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+}
+
+.lighthouse-btn:hover {
+  background-color: var(--lighthouse-signal-blue);
+  color: white;
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.lighthouse-btn-secondary {
+  background-color: white;
+  border: 2px solid var(--lighthouse-sky-mist);
+  color: var(--lighthouse-sea-slate);
+  font-weight: 600;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+}
+
+.lighthouse-btn-secondary:hover {
+  background-color: var(--lighthouse-sky-mist);
+  color: var(--lighthouse-sea-slate);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+/* Version badge */
+.lighthouse-version {
+  display: inline-block;
+  background-color: var(--lighthouse-signal-blue);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+/* Responsive adjustments */
+/* Tablet: 2 columns */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .lighthouse-feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile: 1 column */
+@media (max-width: 768px) {
+  .lighthouse-hero h1 {
+    font-size: 2rem;
+  }
+
+  .lighthouse-hero {
+    padding: 2rem 0;
+  }
+
+  .lighthouse-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lighthouse-logo {
+    max-height: 40px;
+  }
+}

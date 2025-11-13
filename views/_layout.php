@@ -38,7 +38,13 @@
     <main class="container">
         <nav>
             <ul>
-                <li><a href="/"><strong>Acme Corp</strong></a></li>
+                <li>
+                    <a href="/" class="lighthouse-brand">
+                        <img src="/Logo.png" alt="Lighthouse Logo" class="lighthouse-logo">
+                        <strong>Lighthouse</strong>
+                        <span class="lighthouse-version">v<?= htmlspecialchars(config('APP_VERSION')) ?></span>
+                    </a>
+                </li>
             </ul>
             <?php if (!auth_user()): ?>
                 <ul>
@@ -49,8 +55,11 @@
         </nav>
         <?= $content ?>
     </main>
-    <footer class="container">
-        <p>&copy; <?= htmlspecialchars(config('APP_NAME')) ?> - <?= date('Y') ?> · v<?= htmlspecialchars(config('APP_VERSION')) ?></p>
+    <footer class="lighthouse-footer">
+        <div class="container">
+            <p>&copy; <?= htmlspecialchars(config('APP_NAME')) ?> - <?= date('Y') ?> · 
+            Built with PHP <?= PHP_VERSION ?> & Lighthouse Framework</p>
+        </div>
     </footer>
 </body>
 
