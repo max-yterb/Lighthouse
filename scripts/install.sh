@@ -3,12 +3,13 @@ set -euo pipefail
 
 # Lighthouse installer
 # Usage:
-#   bash -c "$(curl -fsSL https://raw.githubusercontent.com/max-yterb/Lighthouse/main/scripts/install.sh)" -- [target-dir]
+#   bash -c "$(curl -fsSL https://raw.githubusercontent.com/max-yterb/Lighthouse/main/scripts/install.sh)"
 # or
-#   bash -c "$(wget -qO- https://raw.githubusercontent.com/max-yterb/Lighthouse/main/scripts/install.sh)" -- [target-dir]
+#   bash -c "$(wget -qO- https://raw.githubusercontent.com/max-yterb/Lighthouse/main/scripts/install.sh)"
 
 REPO_HTTPS="https://github.com/max-yterb/Lighthouse.git"
-TARGET_DIR="${1:-lighthouse-app}"
+INSTALL_DIR="/tmp/lighthouse-install-$$"
+BIN_DIR="/usr/local/bin"
 
 if command -v tput >/dev/null 2>&1; then
   bold=$(tput bold); reset=$(tput sgr0); green=$(tput setaf 2); red=$(tput setaf 1)
@@ -23,36 +24,41 @@ if ! command -v git >/dev/null 2>&1; then
   exit 1
 fi
 
-if [ -e "$TARGET_DIR" ]; then
-  echo "${red}Error:${reset} target already exists: $TARGET_DIR" >&2
+# Check if we have write permissions to install directory
+if [ ! -w "$(dirname "$BIN_DIR")" ] && [ "$EUID" -ne 0 ]; then
+  echo "${red}Error:${reset} Installation requires sudo privileges to write to $BIN_DIR" >&2
+  echo "Please run: sudo bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/max-yterb/Lighthouse/main/scripts/install.sh)\""
   exit 1
 fi
 
+# Create temporary directory for installation
+echo "Installing Lighthouse CLI..."
+mkdir -p "$INSTALL_DIR"
+
 # Shallow clone
-echo "Cloning into $TARGET_DIR ..."
+echo "Downloading Lighthouse..."
 GIT_URL="$REPO_HTTPS"
 
-git clone --depth 1 "$GIT_URL" "$TARGET_DIR"
+git clone --depth 1 "$GIT_URL" "$INSTALL_DIR"
 
-# Remove git history to make it a fresh project
-rm -rf "$TARGET_DIR/.git"
+# Copy the lighthouse script to bin directory
+cp "$INSTALL_DIR/lighthouse" "$BIN_DIR/lighthouse"
+chmod +x "$BIN_DIR/lighthouse"
 
-# Ensure CLI is executable
-chmod +x "$TARGET_DIR/lighthouse" || true
-
-# Remove development database if present
-[ -f "$TARGET_DIR/database/database.sqlite" ] && rm -f "$TARGET_DIR/database/database.sqlite"
+# Clean up temporary directory
+rm -rf "$INSTALL_DIR"
 
 cat <<EOT
 ${green}Done!${reset}
 
-Next steps:
-  cd $TARGET_DIR
-  php -S localhost:8000 -t public/
+Lighthouse CLI has been installed globally.
 
 Useful commands:
-  ./lighthouse version
-  ./lighthouse db make:migration CreateUsers
-  ./lighthouse db migrate
-  ./lighthouse test run
+  lighthouse version
+  lighthouse new my-project
+
+To create a new project:
+  lighthouse new my-app
+  cd my-app
+  php -S localhost:8000 -t public/
 EOT

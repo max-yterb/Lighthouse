@@ -1,19 +1,33 @@
 #!/usr/bin/env php
 <?php
+// Helper function to check if command exists
+if (!function_exists('command_exists')) {
+    function command_exists($command)
+    {
+        $return = shell_exec(sprintf("which %s", escapeshellarg($command)));
+        return !empty($return);
+    }
+}
+
 // Define root and database file
 $root   = __DIR__;
 $dbFile = "$root/database/database.sqlite";
 
-// Make sure database file exists
-if (!file_exists($dbFile)) {
-    if (!is_dir(dirname($dbFile))) {
-        mkdir(dirname($dbFile), 0777, true);
-    }
-    file_put_contents($dbFile, '');
-}
+// Check if we're running in a project directory or globally installed
+$isGlobalInstall = !file_exists(__DIR__ . '/includes/config.php');
 
-require_once __DIR__ . '/includes/config.php';
-require_once __DIR__ . '/includes/db.php';
+if (!$isGlobalInstall) {
+    // Make sure database file exists
+    if (!file_exists($dbFile)) {
+        if (!is_dir(dirname($dbFile))) {
+            mkdir(dirname($dbFile), 0777, true);
+        }
+        file_put_contents($dbFile, '');
+    }
+    
+    require_once __DIR__ . '/includes/config.php';
+    require_once __DIR__ . '/includes/db.php';
+}
 
 $argv = $_SERVER['argv'] ?? [];
 $command = $argv[1] ?? null;
@@ -70,7 +84,11 @@ switch ($command) {
     // Version command
     // -------------------------
     case 'version':
-        echo (string) (config('APP_VERSION') ?? 'dev') . "\n";
+        if ($isGlobalInstall) {
+            echo "0.2.0\n"; // Embedded version for global install
+        } else {
+            echo (string) (config('APP_VERSION') ?? 'dev') . "\n";
+        }
         break;
 
     // -------------------------
@@ -87,49 +105,102 @@ switch ($command) {
             echo "Target path already exists: $targetPath\n";
             exit(1);
         }
-        $source = __DIR__;
-
-        $exclude = [
-            '.git',
-            '.github',
-            'logs',
-            'database/database.sqlite',
-            'tests',
-            'vendor',
-        ];
-
-        $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::SELF_FIRST);
-        foreach ($rii as $item) {
-            $rel = ltrim(str_replace($source, '', $item->getPathname()), '/');
-            $skip = false;
-            foreach ($exclude as $ex) {
-                if ($rel === $ex || str_starts_with($rel, rtrim($ex, '/') . '/')) {
-                    $skip = true;
-                    break;
+        if ($isGlobalInstall) {
+            // When globally installed, clone from GitHub
+            if (!command_exists('git')) {
+                echo "Error: git is required to create new projects.\n";
+                exit(1);
+            }
+            
+            $repoUrl = 'https://github.com/max-yterb/Lighthouse.git';
+            $tempDir = sys_get_temp_dir() . '/lighthouse-new-' . uniqid();
+            
+            echo "Creating new project from repository...\n";
+            exec("git clone --depth 1 '$repoUrl' '$tempDir' 2>&1", $output, $returnCode);
+            
+            if ($returnCode !== 0) {
+                echo "Error: Failed to clone repository.\n";
+                echo implode("\n", $output) . "\n";
+                exit(1);
+            }
+            
+            // Copy files excluding development files
+            $exclude = ['.git', '.github', 'logs', 'database/database.sqlite', 'tests', 'vendor'];
+            
+            $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($tempDir, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::SELF_FIRST);
+            foreach ($rii as $item) {
+                $rel = ltrim(str_replace($tempDir, '', $item->getPathname()), '/');
+                $skip = false;
+                foreach ($exclude as $ex) {
+                    if ($rel === $ex || str_starts_with($rel, rtrim($ex, '/') . '/')) {
+                        $skip = true;
+                        break;
+                    }
+                }
+                if ($skip) continue;
+                $dest = rtrim($targetPath, '/') . '/' . $rel;
+                if ($item->isDir()) {
+                    if (!is_dir($dest)) mkdir($dest, 0777, true);
+                } else {
+                    if (!is_dir(dirname($dest))) mkdir(dirname($dest), 0777, true);
+                    copy($item->getPathname(), $dest);
                 }
             }
-            if ($skip) continue;
-            $dest = rtrim($targetPath, '/') . '/' . $rel;
-            if ($item->isDir()) {
-                if (!is_dir($dest)) mkdir($dest, 0777, true);
-            } else {
-                if (!is_dir(dirname($dest))) mkdir(dirname($dest), 0777, true);
-                copy($item->getPathname(), $dest);
+            
+            // Clean up temp directory
+            exec("rm -rf '$tempDir'");
+            
+        } else {
+            // When running from project directory, copy from current location
+            $source = __DIR__;
+            $exclude = ['.git', '.github', 'logs', 'database/database.sqlite', 'tests', 'vendor'];
+            
+            $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::SELF_FIRST);
+            foreach ($rii as $item) {
+                $rel = ltrim(str_replace($source, '', $item->getPathname()), '/');
+                $skip = false;
+                foreach ($exclude as $ex) {
+                    if ($rel === $ex || str_starts_with($rel, rtrim($ex, '/') . '/')) {
+                        $skip = true;
+                        break;
+                    }
+                }
+                if ($skip) continue;
+                $dest = rtrim($targetPath, '/') . '/' . $rel;
+                if ($item->isDir()) {
+                    if (!is_dir($dest)) mkdir($dest, 0777, true);
+                } else {
+                    if (!is_dir(dirname($dest))) mkdir(dirname($dest), 0777, true);
+                    copy($item->getPathname(), $dest);
+                }
             }
         }
+        
+        // Remove any leftover database file
         if (file_exists($targetPath . '/database/database.sqlite')) {
             unlink($targetPath . '/database/database.sqlite');
         }
+        
         echo "Project created at $targetPath\n";
+        echo "\nNext steps:\n";
+        echo "  cd $targetPath\n";
+        echo "  php -S localhost:8000 -t public/\n";
         break;
 
     default:
-        echo "Unknown command: $command\n";
-        echo "Usage:\n";
-        echo "  cli db make:migration NAME\n";
-        echo "  cli db migrate\n";
-        echo "  cli test run\n";
-        echo "  cli version\n";
-        echo "  cli new PATH\n";
+        if ($isGlobalInstall) {
+            echo "Unknown command: $command\n";
+            echo "Usage:\n";
+            echo "  lighthouse version\n";
+            echo "  lighthouse new PROJECT_NAME\n";
+        } else {
+            echo "Unknown command: $command\n";
+            echo "Usage:\n";
+            echo "  ./lighthouse db make:migration NAME\n";
+            echo "  ./lighthouse db migrate\n";
+            echo "  ./lighthouse test run\n";
+            echo "  ./lighthouse version\n";
+            echo "  ./lighthouse new PATH\n";
+        }
         break;
 }
