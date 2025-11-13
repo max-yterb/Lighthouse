@@ -156,7 +156,26 @@ php -S localhost:8000 -t public
 
 - [💬 **Discussions**](https://github.com/max-yterb/Lighthouse/discussions) - Ask questions and share ideas
 - [🐛 **Issues**](https://github.com/max-yterb/Lighthouse/issues) - Report bugs and request features
-- [📧 **Email**](mailto:max@example.com) - Direct contact
+- [📧 **Email**](mailto:max.yterb@gmail.com) - Direct contact
+
+## 💖 Support Lighthouse
+
+Lighthouse is free and open-source. If you're using it in production or want to support its development:
+
+- ⭐ **Star the repository** - Help others discover Lighthouse
+- 💝 **[Become a GitHub Sponsor](https://github.com/sponsors/max-yterb)** - Support ongoing development
+- 🏢 **[Enterprise Support](mailto:max.yterb@gmail.com?subject=Lighthouse%20Enterprise%20Support)** - Priority support and custom features
+- 📢 **Share your success story** - Tell others about your Lighthouse projects
+
+### 🚀 Need Custom Features?
+
+For mission-critical features or custom development:
+- **Priority Development** - Get your features built first
+- **Custom Integrations** - Tailored solutions for your business
+- **Training & Consulting** - Expert guidance for your team
+- **Code Audits** - Security and performance reviews
+
+[Contact us for enterprise solutions →](mailto:max.yterb@gmail.com?subject=Lighthouse%20Custom%20Development)
 
 ## 📄 License
 

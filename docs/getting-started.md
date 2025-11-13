@@ -231,7 +231,7 @@ chmod -R 777 logs/ database/
 
 - 💬 [GitHub Discussions](https://github.com/max-yterb/Lighthouse/discussions)
 - 🐛 [Report Issues](https://github.com/max-yterb/Lighthouse/issues)
-- 📧 [Email Support](mailto:max@example.com)
+- 📧 [Email Support](mailto:max.yterb@gmail.com)
 
 ## 🎯 What's Next?
 

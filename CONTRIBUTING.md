@@ -225,7 +225,7 @@ Any other context about the feature request.
 
 - [GitHub Discussions](https://github.com/max-yterb/Lighthouse/discussions) - General questions
 - [GitHub Issues](https://github.com/max-yterb/Lighthouse/issues) - Bug reports
-- [Email](mailto:max@example.com) - Direct contact
+- [Email](mailto:max.yterb@gmail.com) - Direct contact
 
 ## 🙏 Recognition
 
