@@ -9,7 +9,7 @@ set -euo pipefail
 
 REPO_HTTPS="https://github.com/max-yterb/Lighthouse.git"
 INSTALL_DIR="/tmp/lighthouse-install-$$"
-BIN_DIR="/usr/local/bin"
+BIN_DIR="${HOME}/.local/bin"
 
 if command -v tput >/dev/null 2>&1; then
   bold=$(tput bold); reset=$(tput sgr0); green=$(tput setaf 2); red=$(tput setaf 1)
@@ -24,10 +24,16 @@ if ! command -v git >/dev/null 2>&1; then
   exit 1
 fi
 
+# Create bin directory if it doesn't exist
+if [ ! -d "$BIN_DIR" ]; then
+  echo "Creating directory: $BIN_DIR"
+  mkdir -p "$BIN_DIR"
+fi
+
 # Check if we have write permissions to install directory
-if [ ! -w "$(dirname "$BIN_DIR")" ] && [ "$EUID" -ne 0 ]; then
-  echo "${red}Error:${reset} Installation requires sudo privileges to write to $BIN_DIR" >&2
-  echo "Please run: sudo bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/max-yterb/Lighthouse/main/scripts/install.sh)\""
+if [ ! -w "$BIN_DIR" ]; then
+  echo "${red}Error:${reset} Cannot write to $BIN_DIR" >&2
+  echo "Please ensure the directory exists and is writable."
   exit 1
 fi
 
@@ -51,12 +57,16 @@ rm -rf "$INSTALL_DIR"
 cat <<EOT
 ${green}Done!${reset}
 
-Lighthouse CLI has been installed globally.
+Lighthouse CLI has been installed to $BIN_DIR/lighthouse
+
+If the 'lighthouse' command is not found, add ~/.local/bin to your PATH:
+  echo 'export PATH="\$HOME/.local/bin:\$PATH"' >> ~/.bashrc
+  source ~/.bashrc
 
 Useful commands:
   lighthouse version
   lighthouse new my-project
-
+  
 To create a new project:
   lighthouse new my-app
   cd my-app

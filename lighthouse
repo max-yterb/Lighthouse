@@ -24,7 +24,7 @@ if (!$isGlobalInstall) {
         }
         file_put_contents($dbFile, '');
     }
-    
+
     require_once __DIR__ . '/includes/config.php';
     require_once __DIR__ . '/includes/db.php';
 }
@@ -85,7 +85,7 @@ switch ($command) {
     // -------------------------
     case 'version':
         if ($isGlobalInstall) {
-            echo "0.2.0\n"; // Embedded version for global install
+            echo "0.3.0\n"; // Embedded version for global install
         } else {
             echo (string) (config('APP_VERSION') ?? 'dev') . "\n";
         }
@@ -111,22 +111,22 @@ switch ($command) {
                 echo "Error: git is required to create new projects.\n";
                 exit(1);
             }
-            
+
             $repoUrl = 'https://github.com/max-yterb/Lighthouse.git';
             $tempDir = sys_get_temp_dir() . '/lighthouse-new-' . uniqid();
-            
+
             echo "Creating new project from repository...\n";
             exec("git clone --depth 1 '$repoUrl' '$tempDir' 2>&1", $output, $returnCode);
-            
+
             if ($returnCode !== 0) {
                 echo "Error: Failed to clone repository.\n";
                 echo implode("\n", $output) . "\n";
                 exit(1);
             }
-            
+
             // Copy files excluding development files
             $exclude = ['.git', '.github', 'logs', 'database/database.sqlite', 'tests', 'vendor'];
-            
+
             $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($tempDir, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::SELF_FIRST);
             foreach ($rii as $item) {
                 $rel = ltrim(str_replace($tempDir, '', $item->getPathname()), '/');
@@ -146,15 +146,14 @@ switch ($command) {
                     copy($item->getPathname(), $dest);
                 }
             }
-            
+
             // Clean up temp directory
             exec("rm -rf '$tempDir'");
-            
         } else {
             // When running from project directory, copy from current location
             $source = __DIR__;
             $exclude = ['.git', '.github', 'logs', 'database/database.sqlite', 'tests', 'vendor'];
-            
+
             $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::SELF_FIRST);
             foreach ($rii as $item) {
                 $rel = ltrim(str_replace($source, '', $item->getPathname()), '/');
@@ -175,12 +174,12 @@ switch ($command) {
                 }
             }
         }
-        
+
         // Remove any leftover database file
         if (file_exists($targetPath . '/database/database.sqlite')) {
             unlink($targetPath . '/database/database.sqlite');
         }
-        
+
         echo "Project created at $targetPath\n";
         echo "\nNext steps:\n";
         echo "  cd $targetPath\n";
