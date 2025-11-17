@@ -50,7 +50,7 @@ cd my-app
 php -S localhost:8000 -t public/
 ```
 
-Or with FrankenPHP for hot reloading:
+Or with FrankenPHP (for production parity during development):
 
 ```bash
 frankenphp php-server --root=public --listen=127.0.0.1:8000 --watch='./**/*.{php,css,js,env}'
@@ -60,17 +60,17 @@ frankenphp php-server --root=public --listen=127.0.0.1:8000 --watch='./**/*.{php
 
 ```php
 <?php
-// routes.php
+// app_routes.php
 route('/', function() {
-    return view('welcome.php', ['message' => 'Hello, Lighthouse!']);
+    return view('home.php', ['title' => 'Welcome']);
 });
 
-route('/api/users', function() {
-    $users = db_select('users');
-    header('Content-Type: application/json');
-    return json_encode($users);
+route('/about', function() {
+    return view('about.php', ['title' => 'About Us']);
 });
 ```
+
+Logic lives in your views—the route just renders templates. This keeps things simple and predictable.
 
 ## 🏗️ Project Structure
 

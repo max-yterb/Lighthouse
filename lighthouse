@@ -85,7 +85,7 @@ switch ($command) {
     // -------------------------
     case 'version':
         if ($isGlobalInstall) {
-            echo "0.8.0\n"; // Embedded version for global install
+            echo "0.8.1\n"; // Embedded version for global install
         } else {
             echo (string) (config('APP_VERSION') ?? 'dev') . "\n";
         }

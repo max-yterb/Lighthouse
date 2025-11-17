@@ -6,18 +6,7 @@ declare(strict_types=1);
 require __DIR__ . '/../bootstrap.php';
 
 // 2. Routing
-route('/', function () {
-    return view('home.php', [
-        'title' => 'Home Max',
-        'description' => 'My Home Page',
-    ]);
-});
-
-// HTMX partial route – skip layout
-route('/htmx', function () {
-    return '<p>Hello from HTMX</p>';
-});
-
+require_once __DIR__ . '/../app_routes.php';
 require_once __DIR__ . '/../auth_routes.php';
 
 // Dispatch the route

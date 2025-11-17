@@ -16,12 +16,12 @@ route('/reset-password', function () {
     return view('reset_password.php');
 });
 
-route('/dashboard', function () {
-    return view('dashboard.php', [], '_dashboard.php');
-});
-
 route('/logout', function () {
     auth_logout();
     header('Location: /login');
     exit;
+});
+
+route('/dashboard', function () {
+    return view('dashboard.php', [], '_dashboard.php');
 });
