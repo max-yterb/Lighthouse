@@ -13,25 +13,69 @@ Lighthouse provides a simple yet powerful routing system that makes it easy to d
 
 ## 🛣️ Basic Routing
 
-Routes are defined in your `routes.php` file using the `route()` function:
+Routes are defined using the `route()` function in two dedicated files:
+
+- **`app_routes.php`** - Your application routes (home, about, products, etc.)
+- **`auth_routes.php`** - Authentication routes (login, register, logout, dashboard, etc.)
+
+Both files are included from `public/index.php`:
 
 ```php
 <?php
+// public/index.php
+require_once __DIR__ . '/../bootstrap.php';
+require_once __DIR__ . '/../app_routes.php';    // App routes
+require_once __DIR__ . '/../auth_routes.php';   // Auth routes
+dispatch($route, $_SERVER['REQUEST_METHOD']);
+```
+
+### Simple Routes in app_routes.php
+
+```php
+<?php
+// app_routes.php
 
 // Simple route
 route('/', function() {
     return view('home.php');
 });
 
-// Route with inline content
+// Route with metadata
 route('/about', function() {
-    return '<h1>About Us</h1><p>Welcome to our company!</p>';
+    return view('about.php', [
+        'title' => 'About Us',
+        'description' => 'Learn more about our company'
+    ]);
 });
 
-// Route returning JSON
-route('/api/status', function() {
-    header('Content-Type: application/json');
-    return json_encode(['status' => 'ok', 'timestamp' => time()]);
+// Route returning inline content
+route('/status', function() {
+    return '<p>Server is running</p>';
+});
+```
+
+### Authentication Routes in auth_routes.php
+
+```php
+<?php
+// auth_routes.php
+
+route('/login', function() {
+    return view('login.php');
+});
+
+route('/register', function() {
+    return view('register.php');
+});
+
+route('/logout', function() {
+    auth_logout();
+    header('Location: /login');
+    exit;
+});
+
+route('/dashboard', function() {
+    return view('dashboard.php');
 });
 ```
 
@@ -85,7 +129,7 @@ route('/archive/{year}/{month}', function($year, $month) {
 route('/blog/{page?}', function($page = 1) {
     $limit = 10;
     $offset = ($page - 1) * $limit;
-    
+
     $posts = db_select('posts', [], 'created_at DESC', $limit, $offset);
     return view('blog.php', ['posts' => $posts, 'page' => $page]);
 });
@@ -102,17 +146,26 @@ This is the **preferred Lighthouse approach** - keep your routes simple and hand
 #### Simple Route Definition
 
 ```php
-// routes.php - Keep it simple!
+// app_routes.php - Keep it simple!
+route('/home', function() {
+    return view('home.php');
+});
+
+route('/about', function() {
+    return view('about.php');
+});
+
+route('/contact', function() {
+    return view('contact.php');
+});
+
+// auth_routes.php
 route('/login', function() {
     return view('login.php');
 });
 
 route('/register', function() {
     return view('register.php');
-});
-
-route('/contact', function() {
-    return view('contact.php');
 });
 ```
 
@@ -168,7 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="lighthouse-auth-container">
     <div class="lighthouse-card">
         <h1>Welcome Back</h1>
-        
+
         <?php if (!empty($errors)): ?>
             <div class="lighthouse-alert error">
                 <ul>
@@ -210,18 +263,18 @@ This approach handles all logic in the route definition before passing data to v
 route('/contact', function() {
     $errors = [];
     $success = '';
-    
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Handle form submission
         $name = sanitize_string($_POST['name']);
         $email = sanitize_email($_POST['email']);
         $message = sanitize_string($_POST['message']);
-        
+
         // Validate
         if (!validate_required($name)) $errors[] = 'Name is required';
         if (!validate_email($email)) $errors[] = 'Valid email is required';
         if (!validate_required($message)) $errors[] = 'Message is required';
-        
+
         if (empty($errors)) {
             // Save to database
             db_insert('contacts', [
@@ -229,11 +282,11 @@ route('/contact', function() {
                 'email' => $email,
                 'message' => $message
             ]);
-            
+
             $success = 'Message sent successfully!';
         }
     }
-    
+
     return view('contact.php', [
         'errors' => $errors,
         'success' => $success
@@ -254,7 +307,7 @@ route('/contact', function() {
 <div class="lighthouse-auth-container">
     <div class="lighthouse-card">
         <h1>Contact Us</h1>
-        
+
         <?php if (!empty($errors)): ?>
             <div class="lighthouse-alert error">
                 <ul>
@@ -335,7 +388,7 @@ route('/api/users', function() {
             $users = db_select('users');
             header('Content-Type: application/json');
             return json_encode($users);
-            
+
         case 'POST':
             $data = json_decode(file_get_contents('php://input'), true);
             $userId = db_insert('users', [
@@ -344,11 +397,11 @@ route('/api/users', function() {
             ]);
             header('Content-Type: application/json');
             return json_encode(['id' => $userId]);
-            
+
         case 'DELETE':
             // Handle deletion
             break;
-            
+
         default:
             http_response_code(405);
             return 'Method Not Allowed';
@@ -365,7 +418,7 @@ route('/dashboard', function() {
         header('Location: /login');
         exit;
     }
-    
+
     $user = db_select_one('users', ['id' => auth_user()]);
     return view('dashboard.php', ['user' => $user], '_dashboard.php');
 });
@@ -377,36 +430,65 @@ route('/admin', function() {
         header('Location: /login');
         exit;
     }
-    
+
     $user = db_select_one('users', ['id' => $user_id]);
     if ($user['role'] !== 'admin') {
         http_response_code(403);
         return view('403.php');
     }
-    
+
     return view('admin.php');
 });
 ```
 
-## 📁 File-based Routes
+## 📁 Route Organization
 
-You can also organize routes by including separate files:
+Lighthouse uses a simple two-file routing structure:
+
+### Standard Structure
+
+```
+app_routes.php       # Regular application routes
+auth_routes.php      # Authentication-related routes
+public/index.php     # Entry point that includes both
+```
+
+### How It Works
+
+Routes from both files are loaded in `public/index.php`:
 
 ```php
-// routes.php
 <?php
+// public/index.php
+require_once __DIR__ . '/../bootstrap.php';
 
-// Include authentication routes
-require_once 'auth_routes.php';
+// Load all routes
+require_once __DIR__ . '/../app_routes.php';
+require_once __DIR__ . '/../auth_routes.php';
 
-// Include API routes
-require_once 'api_routes.php';
-
-// Include admin routes
-if (auth_user() && is_admin()) {
-    require_once 'admin_routes.php';
-}
+// Dispatch the matched route
+dispatch($route, $_SERVER['REQUEST_METHOD']);
 ```
+
+### When to Use Each File
+
+**app_routes.php** - Public application features:
+- Home page (`/`)
+- About, contact, products
+- Blog posts, archives
+- Search, galleries
+- Any customer-facing routes
+
+**auth_routes.php** - User authentication:
+- Login (`/login`)
+- Register (`/register`)
+- Logout (`/logout`)
+- Dashboard (`/dashboard`)
+- Password reset
+- Profile management
+- Any auth-protected routes
+
+This separation keeps your routing organized and makes it easy to find related functionality.
 
 ## 🎨 Route Helpers
 
@@ -424,12 +506,12 @@ route('/old-page', function() {
 ```php
 route('/download/{file}', function($file) {
     $filepath = __DIR__ . '/downloads/' . basename($file);
-    
+
     if (!file_exists($filepath)) {
         http_response_code(404);
         return 'File not found';
     }
-    
+
     header('Content-Type: application/octet-stream');
     header('Content-Disposition: attachment; filename="' . basename($file) . '"');
     header('Content-Length: ' . filesize($filepath));
@@ -443,13 +525,13 @@ route('/download/{file}', function($file) {
 ```php
 route('/htmx/users', function() {
     $users = db_select('users');
-    
+
     // Check if it's an HTMX request
     if (isset($_SERVER['HTTP_HX_REQUEST'])) {
         // Return partial HTML
         return view('partials/users-list.php', ['users' => $users]);
     }
-    
+
     // Return full page
     return view('users.php', ['users' => $users]);
 });
@@ -466,7 +548,7 @@ route('/debug/routes', function() {
         http_response_code(404);
         return 'Not found';
     }
-    
+
     global $routes;
     echo '<h1>Registered Routes</h1>';
     echo '<ul>';
@@ -515,7 +597,7 @@ route('/user/{id}', function($id) {
         http_response_code(400);
         return 'Invalid user ID';
     }
-    
+
     $user = db_select_one('users', ['id' => $id]);
     // ...
 });
@@ -531,10 +613,10 @@ route('/api/user/{id}', function($id) {
             http_response_code(404);
             return json_encode(['error' => 'User not found']);
         }
-        
+
         header('Content-Type: application/json');
         return json_encode($user);
-        
+
     } catch (Exception $e) {
         http_response_code(500);
         return json_encode(['error' => 'Internal server error']);

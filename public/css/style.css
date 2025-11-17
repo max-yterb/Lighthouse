@@ -165,11 +165,6 @@ main {
   margin-bottom: 2rem;
 }
 
-.lighthouse-auth-container {
-  max-width: 800px;
-  margin: 2rem auto;
-}
-
 .lighthouse-feature-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* 3 columns on desktop */

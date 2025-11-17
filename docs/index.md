@@ -10,13 +10,13 @@ Welcome to the official documentation for Lighthouse - a minimal, predictable PH
 
 ### 📚 **Core Concepts**
 - [Routing](routing.md) - URL routing and form handling (both approaches)
-- [Views & Templates](views.md) - Rendering beautiful pages *(coming soon)*
-- [Database](database.md) - Working with SQLite and data *(coming soon)*
-- [Authentication](authentication.md) - User login and security *(coming soon)*
+- [Views & Templates](views.md) - Rendering beautiful pages
+- [Database](database.md) - Working with SQLite and data
+- [Authentication](authentication.md) - User login and security
 
 ### 🛠️ **Advanced Topics**
-- [Validation](validation.md) - Input validation and sanitization *(coming soon)*
-- [Frontend](frontend.md) - HTMX and modern CSS *(coming soon)*
+- [Validation](validation.md) - Input validation and sanitization
+- [Frontend](frontend.md) - HTMX and Pico.css for interactive UIs
 - [Deployment](deployment.md) - Production deployment guide *(coming soon)*
 
 ## ✨ **Features**
